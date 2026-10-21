@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}About — AgriYield AI{% endblock %}
+{% block content %}
+
+<section class="hero-gradient grain pt-40 pb-24 relative overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6 lg:px-8 text-center relative" data-aos="fade-up">
+    <span class="eyebrow text-emerald-soft">Our Mission</span>
+    <h1 class="font-display text-5xl lg:text-6xl font-semibold text-paper mt-5 leading-tight">Farming decisions deserve<br class="hidden md:block"> better data.</h1>
+    <p class="text-paper/70 mt-6 max-w-2xl mx-auto text-lg">AgriYield AI was built to close the gap between raw field conditions and confident planting decisions — using machine learning instead of intuition alone.</p>
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 lg:px-8 py-24 grid lg:grid-cols-2 gap-14 items-center">
+  <div data-aos="fade-right">
+    <span class="eyebrow">The Problem</span>
+    <h2 class="font-display text-3xl font-semibold mt-4 mb-5">Yield estimation is still mostly guesswork</h2>
+    <p class="text-ink/65 dark:text-paper/65 leading-relaxed mb-4">Smallholder and commercial farms alike often plan fertilizer, irrigation, and budget around rules of thumb passed down over generations. That works — until rainfall, soil, or nutrient conditions shift outside the usual range.</p>
+    <p class="text-ink/65 dark:text-paper/65 leading-relaxed">A data-driven forecast doesn't replace field experience — it gives it a second opinion, grounded in the same agronomic patterns extension scientists use, delivered in seconds instead of weeks.</p>
+  </div>
+  <div class="glass-card rounded-3xl p-8" data-aos="fade-left">
+    <h3 class="font-display text-xl font-semibold mb-6">What the model looks at</h3>
+    <div class="space-y-4">
+      {% set factors = [('fa-cloud-rain','Rainfall & Humidity','Water availability across the growth cycle'),('fa-temperature-half','Temperature','Crop-specific thermal comfort bands'),('fa-vial','Soil pH & Type','Nutrient availability and root health'),('fa-flask-vial','N-P-K Levels','Macronutrient sufficiency'),('fa-faucet-drip','Irrigation Method','Water-use efficiency multiplier')] %}
+      {% for icon, title, desc in factors %}
+      <div class="flex items-start gap-4">
+        <div class="h-10 w-10 rounded-xl bg-emerald/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid {{ icon }} text-emerald-dark dark:text-emerald-soft"></i></div>
+        <div><p class="font-semibold text-sm">{{ title }}</p><p class="text-xs text-ink/55 dark:text-paper/55 mt-0.5">{{ desc }}</p></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-forest text-paper grain relative overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+      <span class="eyebrow text-emerald-soft">Under the Hood</span>
+      <h2 class="font-display text-4xl font-semibold mt-4">Built on an ensemble learning model</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass-card rounded-3xl p-8" data-aos="fade-up">
+        <i class="fa-solid fa-diagram-project text-2xl text-emerald-soft mb-4"></i>
+        <h3 class="font-display text-lg font-semibold mb-2">RandomForest Regressor</h3>
+        <p class="text-sm text-paper/65 leading-relaxed">300 decision trees vote on the final yield estimate, reducing overfitting versus any single tree.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8" data-aos="fade-up" data-aos-delay="100">
+        <i class="fa-solid fa-database text-2xl text-emerald-soft mb-4"></i>
+        <h3 class="font-display text-lg font-semibold mb-2">Agronomy-Grounded Training Data</h3>
+        <p class="text-sm text-paper/65 leading-relaxed">Response curves for rainfall, temperature and pH follow published optimal bands per crop, not arbitrary noise.</p>
+      </div>
+      <div class="glass-card rounded-3xl p-8" data-aos="fade-up" data-aos-delay="200">
+        <i class="fa-solid fa-gauge-high text-2xl text-emerald-soft mb-4"></i>
+        <h3 class="font-display text-lg font-semibold mb-2">Confidence-Aware Output</h3>
+        <p class="text-sm text-paper/65 leading-relaxed">Predictions ship with a confidence score that drops for extreme or out-of-distribution field inputs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 lg:px-8 py-24">
+  <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+    <span class="eyebrow">Team</span>
+    <h2 class="font-display text-4xl font-semibold mt-4">Small team, field-tested focus</h2>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% set team = [('Aditi Rao','ML Engineering'),('Kabir Malhotra','Agronomy Research'),('Neha Verma','Product Design'),('Arjun Sharma','Full-Stack Engineering')] %}
+    {% for name, role in team %}
+    <div class="neu-card p-7 text-center card-tilt" data-aos="zoom-in" data-aos-delay="{{ loop.index0 * 80 }}">
+      <div class="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald to-gold mx-auto flex items-center justify-center text-white font-display text-xl font-semibold">{{ name[0] }}</div>
+      <p class="font-semibold mt-4">{{ name }}</p>
+      <p class="text-xs text-ink/55 dark:text-paper/55 mt-1">{{ role }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

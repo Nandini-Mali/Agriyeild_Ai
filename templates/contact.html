@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Contact — AgriYield AI{% endblock %}
+{% block content %}
+
+<section class="hero-gradient grain pt-36 pb-24 relative overflow-hidden">
+  <div class="max-w-4xl mx-auto px-6 text-center relative" data-aos="fade-up">
+    <span class="eyebrow text-emerald-soft">Get in Touch</span>
+    <h1 class="font-display text-4xl lg:text-5xl font-semibold text-paper mt-5">Talk to the AgriYield team</h1>
+    <p class="text-paper/70 mt-4 max-w-xl mx-auto">Questions about the model, a partnership idea, or feedback on a prediction — we read everything.</p>
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 lg:px-8 py-20 grid lg:grid-cols-5 gap-10">
+  <div class="lg:col-span-2 space-y-5" data-aos="fade-right">
+    {% set contacts = [('fa-envelope','Email','hello@agriyield.ai'),('fa-phone','Phone','+91 98765 43210'),('fa-location-dot','Office','Nagpur, Maharashtra, India')] %}
+    {% for icon, label, val in contacts %}
+    <div class="glass-card rounded-2xl p-6 flex items-center gap-4">
+      <div class="h-11 w-11 rounded-xl bg-emerald/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid {{ icon }} text-emerald-dark dark:text-emerald-soft"></i></div>
+      <div><p class="text-xs text-ink/50 dark:text-paper/50">{{ label }}</p><p class="font-semibold text-sm mt-0.5">{{ val }}</p></div>
+    </div>
+    {% endfor %}
+    <div class="glass-card rounded-2xl p-6">
+      <p class="text-xs text-ink/50 dark:text-paper/50 mb-3">Response time</p>
+      <p class="text-sm font-semibold">Within 24 hours, on business days</p>
+    </div>
+  </div>
+
+  <div class="lg:col-span-3" data-aos="fade-left">
+    <div class="glass-card rounded-[28px] p-8 relative overflow-hidden">
+      <form id="contact-form" class="space-y-5">
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div><label class="field-label">Full Name</label><input required name="name" type="text" class="field-input" placeholder="Your name"></div>
+          <div><label class="field-label">Email</label><input required name="email" type="email" class="field-input" placeholder="you@example.com"></div>
+        </div>
+        <div><label class="field-label">Subject</label>
+          <select name="subject" class="field-select">
+            <option>General Inquiry</option><option>Model Accuracy Question</option><option>Partnership</option><option>Bug Report</option>
+          </select>
+        </div>
+        <div><label class="field-label">Message</label><textarea required name="message" rows="5" class="field-input" placeholder="Tell us what's on your mind…"></textarea></div>
+        <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+      </form>
+
+      <div id="contact-success" class="hidden absolute inset-0 bg-paper/95 dark:bg-forest-deep/95 backdrop-blur flex flex-col items-center justify-center text-center p-8">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="#10B981" stroke-width="3"/><path class="check-draw" d="M20 33L28 41L44 24" stroke="#10B981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 class="font-display text-xl font-semibold mt-5 pop-in">Message sent!</h3>
+        <p class="text-sm text-ink/55 dark:text-paper/55 mt-2 max-w-xs pop-in">Thanks for reaching out — our team will get back to you within 24 hours.</p>
+        <button id="contact-reset" class="btn-ghost mt-6 text-sm pop-in">Send another message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('contact-success');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form); const payload = {}; fd.forEach((v,k)=>payload[k]=v);
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
+    try {
+      const res = await fetch('/api/contact', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data.ok) { success.classList.remove('hidden'); } else { showToast(data.error || 'Something went wrong', 'fa-triangle-exclamation', 'text-red-400'); }
+    } catch(err) { showToast('Network error — please try again.', 'fa-triangle-exclamation', 'text-red-400'); }
+    finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message'; }
+  });
+  document.getElementById('contact-reset').addEventListener('click', () => { success.classList.add('hidden'); form.reset(); });
+});
+</script>
+{% endblock %}

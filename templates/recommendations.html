@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}AI Recommendations — AgriYield AI{% endblock %}
+{% block content %}
+
+<section class="hero-gradient grain pt-36 pb-20 relative overflow-hidden">
+  <div class="max-w-4xl mx-auto px-6 text-center relative" data-aos="fade-up">
+    <span class="eyebrow text-emerald-soft">Agronomy Reference</span>
+    <h1 class="font-display text-4xl lg:text-5xl font-semibold text-paper mt-5">AI Farming Recommendations</h1>
+    <p class="text-paper/70 mt-4 max-w-xl mx-auto">Fertilizer dosage guidance for every crop the model supports — the same logic that powers your prediction results.</p>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+  <div class="flex flex-wrap gap-2 mb-8" id="crop-filter" data-aos="fade-up">
+    <button class="filter-chip active" data-filter="all">All Crops</button>
+  </div>
+
+  <div id="rec-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for crop, tip in fert_guide.items() %}
+    <div class="glass-card rounded-3xl p-7 card-tilt rec-card" data-crop="{{ crop }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 40 }}">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-display text-lg font-semibold">{{ crop }}</h3>
+        <span class="h-9 w-9 rounded-xl bg-emerald/10 flex items-center justify-center"><i class="fa-solid fa-wheat-awn text-emerald-dark dark:text-emerald-soft text-sm"></i></span>
+      </div>
+      <p class="text-xs text-ink/45 dark:text-paper/45 uppercase tracking-wide mb-2">Fertilizer Plan</p>
+      <p class="text-sm text-ink/65 dark:text-paper/65 leading-relaxed mb-4">{{ tip }}</p>
+      <p class="text-xs text-ink/45 dark:text-paper/45 uppercase tracking-wide mb-2">Base Yield Reference</p>
+      <p class="text-sm font-semibold mono text-emerald-dark dark:text-emerald-soft">{{ meta.crop_base_yield[crop] }} t/ha</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 lg:px-8 pb-28">
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="glass-card rounded-[28px] p-8" data-aos="fade-up">
+      <h3 class="font-display text-xl font-semibold mb-5 flex items-center gap-2"><i class="fa-solid fa-faucet-drip text-emerald"></i> Irrigation Efficiency Guide</h3>
+      <div class="space-y-4">
+        {% set irr = [('Drip','Best','Up to +18% water-use efficiency, ideal for row crops & orchards'),('Sprinkler','Very Good','Even coverage, +10% efficiency, good for cereals'),('Borewell/Tube well','Good','Reliable but higher energy cost'),('Canal','Moderate','Dependent on seasonal water release schedules'),('Flood','Below Average','High water use, risk of nutrient leaching'),('Rain-fed','Variable','Fully dependent on monsoon timing')] %}
+        {% for name, rating, note in irr %}
+        <div class="flex items-start justify-between gap-4 pb-4 border-b border-black/5 dark:border-white/10 last:border-0 last:pb-0">
+          <div><p class="font-semibold text-sm">{{ name }}</p><p class="text-xs text-ink/50 dark:text-paper/50 mt-1">{{ note }}</p></div>
+          <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald/10 text-emerald-dark dark:text-emerald-soft whitespace-nowrap">{{ rating }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="glass-card rounded-[28px] p-8" data-aos="fade-up" data-aos-delay="100">
+      <h3 class="font-display text-xl font-semibold mb-5 flex items-center gap-2"><i class="fa-solid fa-vial text-emerald"></i> Soil pH Quick Reference</h3>
+      <div class="space-y-4">
+        {% set ph = [('< 5.5','Acidic','Apply agricultural lime; suits tea, potato in moderation'),('5.5 – 6.5','Slightly Acidic','Good for rice, potato, tea'),('6.5 – 7.3','Neutral','Ideal for most cereals & vegetables'),('7.3 – 7.8','Slightly Alkaline','Suits wheat, mustard, gram'),('> 7.8','Alkaline','Apply gypsum; watch micronutrient lockout')] %}
+        {% for range, label, note in ph %}
+        <div class="flex items-start justify-between gap-4 pb-4 border-b border-black/5 dark:border-white/10 last:border-0 last:pb-0">
+          <div><p class="font-semibold text-sm mono">{{ range }} <span class="font-body font-normal text-ink/60 dark:text-paper/60">— {{ label }}</span></p><p class="text-xs text-ink/50 dark:text-paper/50 mt-1">{{ note }}</p></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.rec-card');
+  const filterHost = document.getElementById('crop-filter');
+  const crops = [...new Set([...cards].map(c => c.dataset.crop))];
+  crops.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'filter-chip'; b.dataset.filter = c; b.textContent = c;
+    filterHost.appendChild(b);
+  });
+  filterHost.addEventListener('click', (e) => {
+    const btn = e.target.closest('button'); if (!btn) return;
+    filterHost.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    cards.forEach(c => c.style.display = (f === 'all' || c.dataset.crop === f) ? '' : 'none');
+  });
+});
+</script>
+<style>
+.filter-chip{ font-size:.8rem; font-weight:600; padding:8px 16px; border-radius:999px; background:rgba(11,61,46,.06); transition:all .2s ease; }
+.dark .filter-chip{ background:rgba(255,255,255,.08); }
+.filter-chip.active{ background:linear-gradient(135deg,#10B981,#0B3D2E); color:#fff; }
+</style>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}AgriYield AI — Smart Crop Yield Prediction{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="relative hero-gradient grain overflow-hidden pt-40 pb-28 lg:pt-48 lg:pb-36">
+  <div id="leaf-particles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+  <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-emerald/20 blur-3xl"></div>
+  <div class="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-gold/10 blur-3xl"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
+    <div data-aos="fade-up">
+      <span class="eyebrow text-emerald-soft">Machine Learning · Precision Agriculture</span>
+      <h1 class="font-display text-5xl sm:text-6xl lg:text-[4.2rem] leading-[1.05] font-semibold mt-5 text-paper">
+        Know your harvest <span class="hero-text-gradient">before you sow</span> a single seed.
+      </h1>
+      <p class="mt-6 text-lg text-paper/70 max-w-xl leading-relaxed">
+        AgriYield AI turns rainfall, soil chemistry, and nutrient data into a precise crop yield forecast — with fertilizer, irrigation, and profit guidance tailored to your field.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href="{{ url_for('predict') }}" class="btn-primary inline-flex items-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Run a Prediction
+        </a>
+        <a href="{{ url_for('about') }}" class="btn-ghost text-paper inline-flex items-center gap-2">
+          <i class="fa-solid fa-circle-play"></i> How it works
+        </a>
+      </div>
+
+      <div class="mt-14 grid grid-cols-3 gap-6 max-w-md">
+        <div>
+          <p class="stat-num text-3xl font-bold text-paper"><span data-counter="96.9" data-suffix="%">0%</span></p>
+          <p class="text-xs text-paper/55 mt-1">Model R² Score</p>
+        </div>
+        <div>
+          <p class="stat-num text-3xl font-bold text-paper"><span data-counter="15" data-suffix="+">0</span></p>
+          <p class="text-xs text-paper/55 mt-1">Crops Supported</p>
+        </div>
+        <div>
+          <p class="stat-num text-3xl font-bold text-paper"><span data-counter="9000" data-suffix="+">0</span></p>
+          <p class="text-xs text-paper/55 mt-1">Training Records</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative" data-aos="fade-up" data-aos-delay="150">
+      <div class="glass-card float-card rounded-[28px] p-6 max-w-md ml-auto">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <p class="text-xs text-paper/60">Predicted Yield</p>
+            <p class="font-display text-3xl font-semibold text-paper mt-1">4.68 <span class="text-base font-normal text-paper/60">t/ha</span></p>
+          </div>
+          <div class="relative h-16 w-16">
+            <svg class="ring-dial" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" stroke="rgba(255,255,255,.15)" stroke-width="6" fill="none"/><circle cx="32" cy="32" r="27" stroke="url(#gg)" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="15"/><defs><linearGradient id="gg" x1="0" y1="0" x2="64" y2="64"><stop stop-color="#10B981"/><stop offset="1" stop-color="#D4AF37"/></linearGradient></defs></svg>
+            <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-paper">91%</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="rounded-2xl bg-white/10 p-3"><p class="text-paper/55 text-xs">Crop</p><p class="text-paper font-semibold mt-1">Wheat · Rabi</p></div>
+          <div class="rounded-2xl bg-white/10 p-3"><p class="text-paper/55 text-xs">Production</p><p class="text-paper font-semibold mt-1">14.9 tons</p></div>
+          <div class="rounded-2xl bg-white/10 p-3"><p class="text-paper/55 text-xs">Water Need</p><p class="text-paper font-semibold mt-1">550 mm</p></div>
+          <div class="rounded-2xl bg-white/10 p-3"><p class="text-paper/55 text-xs">Est. Profit</p><p class="text-emerald-soft font-semibold mt-1">₹1.8L</p></div>
+        </div>
+      </div>
+
+      <div class="glass-card float-card d2 rounded-2xl px-5 py-3.5 absolute -left-6 top-10 hidden sm:flex items-center gap-3">
+        <i class="fa-solid fa-cloud-rain text-emerald-soft"></i>
+        <div><p class="text-[11px] text-paper/60 leading-none">Rainfall</p><p class="text-sm font-semibold text-paper leading-none mt-1">742 mm optimal</p></div>
+      </div>
+      <div class="glass-card float-card d3 rounded-2xl px-5 py-3.5 absolute -right-4 -bottom-8 hidden sm:flex items-center gap-3">
+        <i class="fa-solid fa-flask text-gold"></i>
+        <div><p class="text-[11px] text-paper/60 leading-none">Soil Health</p><p class="text-sm font-semibold text-paper leading-none mt-1">Balanced NPK</p></div>
+      </div>
+    </div>
+  </div>
+
+  <svg class="absolute bottom-0 left-0 right-0 text-paper dark:text-forest-deep" viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none" style="height:60px;width:100%;">
+    <path d="M0 40C240 80 480 0 720 24C960 48 1200 76 1440 40V80H0V40Z" fill="currentColor"/>
+  </svg>
+</section>
+
+<!-- TRUST STRIP -->
+<section class="py-10 bg-paper dark:bg-forest-deep">
+  <div class="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-center gap-x-14 gap-y-4 opacity-60 text-sm font-medium">
+    <span><i class="fa-solid fa-satellite-dish mr-2 text-emerald"></i>ICAR-aligned agronomy heuristics</span>
+    <span><i class="fa-solid fa-server mr-2 text-emerald"></i>RandomForest / XGBoost ready</span>
+    <span><i class="fa-solid fa-shield-halved mr-2 text-emerald"></i>Session-secure predictions</span>
+    <span><i class="fa-solid fa-mobile-screen mr-2 text-emerald"></i>Fully responsive</span>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="py-28 max-w-7xl mx-auto px-6 lg:px-8">
+  <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+    <span class="eyebrow">Platform</span>
+    <h2 class="font-display text-4xl lg:text-5xl font-semibold mt-4">Everything a modern farm operation needs</h2>
+    <p class="text-ink/60 dark:text-paper/60 mt-4">From raw field data to a fertilizer plan and profit forecast — one connected workflow.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% set features = [
+      ('fa-brain','Yield Prediction Engine','RandomForest model trained on rainfall, soil, and nutrient patterns to forecast tons/hectare.'),
+      ('fa-chart-line','Smart Analytics Dashboard','Interactive charts for rainfall trends, nutrient balance, and district-wise performance.'),
+      ('fa-clock-rotate-left','Prediction History','Every forecast saved and searchable, with exportable PDF reports.'),
+      ('fa-lightbulb','AI Recommendations','Fertilizer dosage, irrigation type, and soil-health guidance personalised per crop.'),
+      ('fa-cloud-sun-rain','Weather Integration','Six-day outlook layered against your crop water requirement.'),
+      ('fa-microphone','Voice Input','Speak your field data instead of typing — hands-free for the field.'),
+    ] %}
+    {% for icon, title, desc in features %}
+    <div class="feature-card glass-card card-tilt" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 60 }}">
+      <div class="feature-icon h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald to-forest flex items-center justify-center mb-5 shadow-glow">
+        <i class="fa-solid {{ icon }} text-white"></i>
+      </div>
+      <h3 class="font-display text-xl font-semibold mb-2">{{ title }}</h3>
+      <p class="text-sm text-ink/60 dark:text-paper/60 leading-relaxed">{{ desc }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-28 bg-forest text-paper relative overflow-hidden grain">
+  <div class="absolute top-0 right-0 h-80 w-80 bg-emerald/20 blur-3xl rounded-full"></div>
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
+    <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+      <span class="eyebrow text-emerald-soft">Process</span>
+      <h2 class="font-display text-4xl lg:text-5xl font-semibold mt-4">Three steps to a confident forecast</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      {% set steps = [
+        ('01','Describe your field','State, district, crop, season, area, soil type and pH — takes under a minute.'),
+        ('02','Model runs instantly','A RandomForest regressor scores rainfall, temperature, humidity and NPK together.'),
+        ('03','Get an action plan','Yield, production, confidence, fertilizer dose, water need and profit — all in one view.'),
+      ] %}
+      {% for num, title, desc in steps %}
+      <div class="glass-card rounded-3xl p-8" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+        <span class="font-mono text-emerald-soft text-sm">{{ num }}</span>
+        <h3 class="font-display text-2xl font-semibold mt-3 mb-3">{{ title }}</h3>
+        <p class="text-paper/65 text-sm leading-relaxed">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- LIVE STATS -->
+<section class="py-24 max-w-7xl mx-auto px-6 lg:px-8">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+    {% set stats = [('9,000+','Synthetic records trained'),('15','Crop varieties'),('12','States covered'),('96.9%','Variance explained (R²)')] %}
+    {% for val, label in stats %}
+    <div class="neu-card p-7 text-center" data-aos="zoom-in" data-aos-delay="{{ loop.index0 * 80 }}">
+      <p class="font-display text-3xl font-bold text-emerald-dark dark:text-emerald-soft">{{ val }}</p>
+      <p class="text-xs text-ink/55 dark:text-paper/55 mt-2">{{ label }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-28 max-w-7xl mx-auto px-6 lg:px-8">
+  <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+    <span class="eyebrow">Field Reports</span>
+    <h2 class="font-display text-4xl lg:text-5xl font-semibold mt-4">Trusted across the season</h2>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6">
+    {% set testimonials = [
+      ('Rohan Deshmukh','Cotton farmer, Nagpur','The fertilizer suggestion alone paid for the season — cut my urea spend and yield still went up.'),
+      ('Priya Iyer','Agronomy consultant','I use the dashboard with every client onboarding. The district-wise comparison is genuinely useful.'),
+      ('S. Kulkarni','Sugarcane grower, Kolhapur','Confidence score helps me know when to trust the number and when to double check the inputs.'),
+    ] %}
+    {% for name, role, quote in testimonials %}
+    <div class="glass-card rounded-3xl p-8" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+      <div class="flex gap-1 text-gold mb-4">{% for i in range(5) %}<i class="fa-solid fa-star text-xs"></i>{% endfor %}</div>
+      <p class="text-sm leading-relaxed text-ink/75 dark:text-paper/75">"{{ quote }}"</p>
+      <div class="flex items-center gap-3 mt-6">
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-emerald to-gold flex items-center justify-center text-white font-semibold text-sm">{{ name[0] }}</div>
+        <div><p class="font-semibold text-sm">{{ name }}</p><p class="text-xs text-ink/50 dark:text-paper/50">{{ role }}</p></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="max-w-7xl mx-auto px-6 lg:px-8 pb-28">
+  <div class="hero-gradient grain rounded-[36px] px-8 py-20 text-center relative overflow-hidden" data-aos="zoom-in">
+    <div class="absolute -bottom-20 -left-20 h-72 w-72 bg-gold/20 blur-3xl rounded-full"></div>
+    <h2 class="font-display text-4xl lg:text-5xl font-semibold text-paper max-w-2xl mx-auto">Plan your next harvest with data, not guesswork.</h2>
+    <p class="text-paper/70 mt-5 max-w-lg mx-auto">Free to try. No credit card. Results in seconds.</p>
+    <a href="{{ url_for('predict') }}" class="btn-primary inline-flex items-center gap-2 mt-8">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> Start Predicting
+    </a>
+  </div>
+</section>
+
+{% endblock %}

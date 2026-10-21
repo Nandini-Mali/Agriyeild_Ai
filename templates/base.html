@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}AgriYield AI — Smart Crop Yield Prediction{% endblock %}</title>
+<meta name="description" content="{% block description %}AgriYield AI predicts crop yield with machine learning — rainfall, soil, nutrients and irrigation analysed to help farmers plan better harvests.{% endblock %}">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Icons / libs -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          forest: { DEFAULT:'#0B3D2E', deep:'#06261C', light:'#134E38' },
+          emerald: { DEFAULT:'#10B981', dark:'#059669', soft:'#34D399' },
+          gold: { DEFAULT:'#D4AF37', soft:'#E8C766' },
+          paper: '#F7F8F3',
+          ink: '#0A0F0D'
+        },
+        fontFamily: {
+          display: ['"Fraunces"', 'serif'],
+          body: ['"Inter"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace']
+        },
+        boxShadow: {
+          glow: '0 0 40px -8px rgba(16,185,129,0.55)',
+          goldglow: '0 0 30px -6px rgba(212,175,55,0.55)',
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="font-body bg-paper text-ink dark:bg-forest-deep dark:text-paper transition-colors duration-500 antialiased">
+
+<!-- Furrow field texture (signature background motif) -->
+<div class="furrow-field" aria-hidden="true"></div>
+
+<!-- Page load curtain -->
+<div id="loader" class="loader-curtain">
+  <div class="loader-mark">
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+      <path d="M28 4C28 4 46 16 46 32C46 41.9411 37.9411 50 28 50C18.0589 50 10 41.9411 10 32C10 16 28 4 28 4Z" stroke="url(#g1)" stroke-width="2.4"/>
+      <path d="M28 50V26" stroke="url(#g1)" stroke-width="2.4" stroke-linecap="round"/>
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="56" y2="56"><stop stop-color="#10B981"/><stop offset="1" stop-color="#D4AF37"/></linearGradient></defs>
+    </svg>
+    <span class="loader-word">AgriYield<span class="text-emerald">AI</span></span>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<header id="site-nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <nav class="max-w-7xl mx-auto px-5 lg:px-8 flex items-center justify-between h-20">
+    <a href="{{ url_for('index') }}" class="flex items-center gap-2.5 group">
+      <span class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald to-forest shadow-glow group-hover:scale-105 transition-transform">
+        <i class="fa-solid fa-seedling text-white text-sm"></i>
+      </span>
+      <span class="font-display text-xl font-semibold tracking-tight">AgriYield <span class="text-emerald">AI</span></span>
+    </a>
+
+    <div class="hidden lg:flex items-center gap-1 nav-pill">
+      <a href="{{ url_for('index') }}" class="nav-link {{ 'active' if active=='home' }}">Home</a>
+      <a href="{{ url_for('about') }}" class="nav-link {{ 'active' if active=='about' }}">About</a>
+      <a href="{{ url_for('predict') }}" class="nav-link {{ 'active' if active=='predict' }}">Prediction</a>
+      <a href="{{ url_for('dashboard') }}" class="nav-link {{ 'active' if active=='dashboard' }}">Dashboard</a>
+      <a href="{{ url_for('history') }}" class="nav-link {{ 'active' if active=='history' }}">History</a>
+      <a href="{{ url_for('recommendations') }}" class="nav-link {{ 'active' if active=='recommendations' }}">Recommendations</a>
+      <a href="{{ url_for('contact') }}" class="nav-link {{ 'active' if active=='contact' }}">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button id="theme-toggle" aria-label="Toggle dark mode" class="icon-btn">
+        <i class="fa-solid fa-moon dark:hidden"></i>
+        <i class="fa-solid fa-sun hidden dark:inline"></i>
+      </button>
+      <a href="{{ url_for('predict') }}" class="hidden sm:inline-flex btn-glow">
+        <span>Try Prediction</span>
+        <i class="fa-solid fa-arrow-right text-xs"></i>
+      </a>
+      <button id="nav-burger" class="lg:hidden icon-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- mobile menu -->
+  <div id="mobile-menu" class="lg:hidden hidden mx-4 mb-3 glass-card rounded-2xl overflow-hidden">
+    <a href="{{ url_for('index') }}" class="mobile-link">Home</a>
+    <a href="{{ url_for('about') }}" class="mobile-link">About</a>
+    <a href="{{ url_for('predict') }}" class="mobile-link">Prediction</a>
+    <a href="{{ url_for('dashboard') }}" class="mobile-link">Dashboard</a>
+    <a href="{{ url_for('history') }}" class="mobile-link">History</a>
+    <a href="{{ url_for('recommendations') }}" class="mobile-link">Recommendations</a>
+    <a href="{{ url_for('contact') }}" class="mobile-link">Contact</a>
+  </div>
+</header>
+
+<main class="relative z-10">
+{% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="relative z-10 mt-32 border-t border-black/5 dark:border-white/10 bg-white/60 dark:bg-forest/40 backdrop-blur-xl">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+    <div class="md:col-span-2">
+      <a href="{{ url_for('index') }}" class="flex items-center gap-2.5 mb-4">
+        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald to-forest">
+          <i class="fa-solid fa-seedling text-white text-sm"></i>
+        </span>
+        <span class="font-display text-xl font-semibold">AgriYield <span class="text-emerald">AI</span></span>
+      </a>
+      <p class="text-sm text-ink/60 dark:text-paper/60 max-w-sm leading-relaxed">Machine-learning yield forecasts built from rainfall, soil chemistry, and nutrient data — helping every farm plan the season with more certainty and less guesswork.</p>
+      <div class="flex gap-3 mt-6">
+        <a href="#" class="social-btn"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-github"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4 class="font-display font-semibold mb-4 text-sm tracking-wide uppercase text-ink/50 dark:text-paper/50">Platform</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="{{ url_for('predict') }}" class="footer-link">Yield Prediction</a></li>
+        <li><a href="{{ url_for('dashboard') }}" class="footer-link">Analytics Dashboard</a></li>
+        <li><a href="{{ url_for('history') }}" class="footer-link">Prediction History</a></li>
+        <li><a href="{{ url_for('recommendations') }}" class="footer-link">AI Recommendations</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-display font-semibold mb-4 text-sm tracking-wide uppercase text-ink/50 dark:text-paper/50">Company</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="{{ url_for('about') }}" class="footer-link">About</a></li>
+        <li><a href="{{ url_for('contact') }}" class="footer-link">Contact</a></li>
+        <li><a href="#" class="footer-link">Privacy Policy</a></li>
+        <li><a href="#" class="footer-link">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-black/5 dark:border-white/10 py-6 text-center text-xs text-ink/50 dark:text-paper/50">
+    © 2026 AgriYield AI. Built for research &amp; demonstration purposes. Predictions are model estimates, not agronomic guarantees.
+  </div>
+</footer>
+
+<!-- AI Chat Assistant -->
+<div id="chat-widget" class="fixed bottom-6 right-6 z-50">
+  <button id="chat-toggle" class="chat-fab">
+    <i class="fa-solid fa-comment-dots text-lg"></i>
+    <span class="chat-fab-pulse"></span>
+  </button>
+  <div id="chat-panel" class="chat-panel hidden">
+    <div class="chat-head">
+      <div class="flex items-center gap-2">
+        <span class="h-8 w-8 rounded-full bg-gradient-to-br from-emerald to-gold flex items-center justify-center"><i class="fa-solid fa-robot text-white text-xs"></i></span>
+        <div>
+          <p class="font-semibold text-sm leading-none">Sprout</p>
+          <p class="text-[11px] text-emerald leading-none mt-1">● Online · AI Assistant</p>
+        </div>
+      </div>
+      <button id="chat-close" class="text-ink/50 dark:text-paper/50 hover:text-ink dark:hover:text-paper"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="chat-body" class="chat-body">
+      <div class="chat-msg bot">Hi, I'm Sprout 🌱 Ask me about soil pH, irrigation, fertilizer dosage, or how to read your yield prediction.</div>
+    </div>
+    <form id="chat-form" class="chat-input-row">
+      <input id="chat-input" type="text" placeholder="Ask about your crop…" autocomplete="off">
+      <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+</div>
+
+<!-- toast -->
+<div id="toast-stack" class="fixed top-24 right-5 z-[60] flex flex-col gap-3 items-end"></div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
